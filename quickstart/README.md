@@ -5,8 +5,8 @@ docker run -it --rm --name tensorflow --network host -p 1337:1337 -u $(id -u):$(
 
 ### Setup
 
-````
+```
 conda create --name quickstart
 conda activate quickstart
 pip install -r requirements.txt
-````
+```
