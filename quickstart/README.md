@@ -1,6 +1,4 @@
-```
 docker run -it --rm -p 1337:1337 --name tensorflow --network host -v ${PWD}:/workdir -w /workdir tensorflow/tensorflow:latest-gpu bash
-```
 
 ### Setup
 
