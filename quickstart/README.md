@@ -10,3 +10,5 @@ conda create --name quickstart
 conda activate quickstart
 pip install -r requirements.txt
 ```
+
+https://www.tensorflow.org/tutorials/keras/classification
