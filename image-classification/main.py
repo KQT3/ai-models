@@ -36,6 +36,7 @@ def plot_value_array(i, predictions_array, true_label):
 
 def start():
     print(tf.__version__)
+    print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
     fashion_mnist = tf.keras.datasets.fashion_mnist
 
     (train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
