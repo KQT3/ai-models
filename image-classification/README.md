@@ -7,3 +7,5 @@ docker run --gpus 1 -it -v ${PWD}:/workdir -w /workdir tensorflow/tensorflow:lat
 
 docker run --gpus all -it -v ${PWD}:/workdir -w /workdir tensorflow/tensorflow:latest-gpu bash
 docker run --gpus all -it -v ${PWD}:/workdir -w /workdir tensorflow/tensorflow:latest-gpu bash
+
+d
