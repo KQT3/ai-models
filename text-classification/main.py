@@ -16,9 +16,14 @@ def main():
     print(tf.__version__)
     print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 
-    url = "https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz"
+    # urlImdb = "https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz"
+    aclImdb_v1 = "aclImdb_v1"
+    aclImdb = "aclImdb"
+    urlStackOverflow = "https://storage.googleapis.com/download.tensorflow.org/data/stack_overflow_16k.tar.gz"
+    stack_overflow_16k = "stack_overflow_16k"
+    stack_overflow = "stack_overflow"
 
-    dataset = tf.keras.utils.get_file("aclImdb_v1", url, untar=True, cache_dir='.', cache_subdir='')
+    dataset = tf.keras.utils.get_file("aclImdb_v1", urlStackOverflow, untar=True, cache_dir='.', cache_subdir='')
 
     dataset_dir = os.path.join(os.path.dirname(dataset), 'aclImdb')
     train_dir = os.path.join(dataset_dir, 'train')
@@ -91,8 +96,68 @@ def main():
     val_ds = val_ds.cache().prefetch(buffer_size=AUTOTUNE)
     test_ds = test_ds.cache().prefetch(buffer_size=AUTOTUNE)
 
+    embedding_dim = 16
 
-#     TODO Create the model https://www.tensorflow.org/tutorials/keras/text_classification
+    model = tf.keras.Sequential([
+        tf.keras.layers.Embedding(max_features + 1, embedding_dim),
+        tf.keras.layers.Dropout(0.2),
+        tf.keras.layers.GlobalAveragePooling1D(),
+        tf.keras.layers.Dropout(0.2),
+        tf.keras.layers.Dense(4)])
+
+    model.summary()
+
+    model.compile(loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+                  optimizer='adam',
+                  metrics=['accuracy'])
+    epochs = 10
+    history = model.fit(train_ds, validation_data=val_ds, epochs=epochs)
+
+    loss, accuracy = model.evaluate(test_ds)
+
+    print("Loss: ", loss)
+    print("Accuracy: ", accuracy)
+
+    history_dict = history.history
+    history_dict.keys()
+
+    acc = history_dict['accuracy']
+    val_acc = history_dict['val_accuracy']
+    loss = history_dict['loss']
+    val_loss = history_dict['val_loss']
+
+    epochs = range(1, len(acc) + 1)
+
+    plt.plot(epochs, loss, 'bo', label='Training loss')
+    plt.plot(epochs, val_loss, 'b', label='Validation loss')
+    plt.title('Training and validation loss')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.legend()
+
+    plt.show()
+
+    plt.plot(epochs, acc, 'bo', label='Training acc')
+    plt.plot(epochs, val_acc, 'b', label='Validation acc')
+    plt.title('Training and validation accuracy')
+    plt.xlabel('Epochs')
+    plt.ylabel('Accuracy')
+    plt.legend(loc='lower right')
+
+    plt.show()
+
+    export_model = tf.keras.Sequential([vectorize_layer, model, tf.keras.layers.Activation('sigmoid')])
+
+    export_model.compile(loss=tf.keras.losses.BinaryCrossentropy(from_logits=False),
+                         optimizer="adam",
+                         metrics=['accuracy'])
+
+    loss, accuracy = export_model.evaluate(raw_test_ds)
+    print(accuracy)
+
+    examples = ["The movie was great!", "The movie was okay.", "The movie was terrible..."]
+    export_model.predict(examples)
+
 
 if __name__ == '__main__':
     main()
