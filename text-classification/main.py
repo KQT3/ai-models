@@ -16,28 +16,33 @@ def main():
     print(tf.__version__)
     print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 
-    # urlImdb = "https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz"
+    urlImdb = "https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz"
     aclImdb_v1 = "aclImdb_v1"
     aclImdb = "aclImdb"
+
     urlStackOverflow = "https://storage.googleapis.com/download.tensorflow.org/data/stack_overflow_16k.tar.gz"
     stack_overflow_16k = "stack_overflow_16k"
     stack_overflow = "stack_overflow"
 
-    dataset = tf.keras.utils.get_file("aclImdb_v1", urlStackOverflow, untar=True, cache_dir='.', cache_subdir='')
+    dataset = tf.keras.utils.get_file(stack_overflow_16k,
+                                      urlStackOverflow,
+                                      untar=True,
+                                      cache_dir='.',
+                                      cache_subdir=stack_overflow)
 
-    dataset_dir = os.path.join(os.path.dirname(dataset), 'aclImdb')
+    dataset_dir = os.path.join(os.path.dirname(dataset), '')
     train_dir = os.path.join(dataset_dir, 'train')
     os.listdir(train_dir)
-    sample_file = os.path.join(train_dir, 'pos/1181_9.txt')
-    with open(sample_file) as f:
-        print(f.read())
-    remove_dir = os.path.join(train_dir, 'unsup')
-    shutil.rmtree(remove_dir)
+    # sample_file = os.path.join(train_dir, 'pos/1181_9.txt')
+    # with open(sample_file) as f:
+    #     print(f.read())
+    # remove_dir = os.path.join(train_dir, 'unsup')
+    # shutil.rmtree(remove_dir)
 
     batch_size = 32
     seed = 42
     raw_train_ds = tf.keras.utils.text_dataset_from_directory(
-        'aclImdb/train',
+        stack_overflow + '/train',
         batch_size=batch_size,
         validation_split=0.2,
         subset='training',
@@ -51,14 +56,14 @@ def main():
     print("Label 1 corresponds to", raw_train_ds.class_names[1])
 
     raw_val_ds = tf.keras.utils.text_dataset_from_directory(
-        'aclImdb/train',
+        stack_overflow + '/train',
         batch_size=batch_size,
         validation_split=0.2,
         subset='validation',
         seed=seed)
 
     raw_test_ds = tf.keras.utils.text_dataset_from_directory(
-        'aclImdb/test',
+        stack_overflow + '/test',
         batch_size=batch_size)
 
     max_features = 10000
@@ -148,15 +153,15 @@ def main():
 
     export_model = tf.keras.Sequential([vectorize_layer, model, tf.keras.layers.Activation('sigmoid')])
 
-    export_model.compile(loss=tf.keras.losses.BinaryCrossentropy(from_logits=False),
+    export_model.compile(loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False),
                          optimizer="adam",
                          metrics=['accuracy'])
 
     loss, accuracy = export_model.evaluate(raw_test_ds)
     print(accuracy)
 
-    examples = ["The movie was great!", "The movie was okay.", "The movie was terrible..."]
-    export_model.predict(examples)
+    # examples = ["The movie was great!", "The movie was okay.", "The movie was terrible..."]
+    # export_model.predict(examples)
 
 
 if __name__ == '__main__':
