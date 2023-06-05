@@ -1,2 +1,3 @@
 tensorflow
-keras
+tensorflow_hub
+tensorflow_datasets
