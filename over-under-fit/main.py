@@ -18,6 +18,7 @@ def pack_row(*row):
     features = tf.stack(row[1:], 1)
     return features, label
 
+
 def main():
     global features
     logdir = pathlib.Path(tempfile.mkdtemp()) / "tensorboard_logs"
@@ -25,8 +26,6 @@ def main():
     gz = tf.keras.utils.get_file('HIGGS.csv.gz', 'http://mlphysics.ics.uci.edu/data/higgs/HIGGS.csv.gz')
     FEATURES = 28
     ds = tf.data.experimental.CsvDataset(gz, [float(), ] * (FEATURES + 1), compression_type="GZIP")
-
-
 
     packed_ds = ds.batch(10000).map(pack_row).unbatch()
     for features, label in packed_ds.batch(1000).take(1):
@@ -70,9 +69,9 @@ def main():
             optimizer = get_optimizer()
         model.compile(optimizer=optimizer,
                       loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
-                      metrics=[
-                          tf.keras.metrics.BinaryCrossentropy(
-                              from_logits=True, name='binary_crossentropy'),
+                      metrics=[tf.keras.metrics.BinaryCrossentropy(
+                          from_logits=True,
+                          name='binary_crossentropy'),
                           'accuracy'])
 
         model.summary()
@@ -86,11 +85,11 @@ def main():
             verbose=0)
         return history
 
+    print("tiny_model")
     tiny_model = tf.keras.Sequential([
         tf.keras.layers.Dense(16, activation='elu', input_shape=(FEATURES,)),
         tf.keras.layers.Dense(1)
     ])
-
     size_histories = {}
     size_histories['Tiny'] = compile_and_fit(tiny_model, 'sizes/Tiny')
 
@@ -98,23 +97,24 @@ def main():
     plotter.plot(size_histories)
     plt.ylim([0.5, 0.7])
 
+    print("small_model")
     small_model = tf.keras.Sequential([
         tf.keras.layers.Dense(16, activation='elu', input_shape=(FEATURES,)),
         tf.keras.layers.Dense(16, activation='elu'),
         tf.keras.layers.Dense(1)
     ])
-
     size_histories['Small'] = compile_and_fit(small_model, 'sizes/Small')
 
+    print("medium_model")
     medium_model = tf.keras.Sequential([
         tf.keras.layers.Dense(64, activation='elu', input_shape=(FEATURES,)),
         tf.keras.layers.Dense(64, activation='elu'),
         tf.keras.layers.Dense(64, activation='elu'),
         tf.keras.layers.Dense(1)
     ])
-
     size_histories['Medium'] = compile_and_fit(medium_model, "sizes/Medium")
 
+    print("large_model")
     large_model = tf.keras.Sequential([
         tf.keras.layers.Dense(512, activation='elu', input_shape=(FEATURES,)),
         tf.keras.layers.Dense(512, activation='elu'),
@@ -122,11 +122,11 @@ def main():
         tf.keras.layers.Dense(512, activation='elu'),
         tf.keras.layers.Dense(1)
     ])
-
     size_histories['large'] = compile_and_fit(large_model, "sizes/large")
 
     plotter.plot(size_histories)
     a = plt.xscale('log')
+    print("a: {}", a)
     plt.xlim([5, max(plt.xlim())])
     plt.ylim([0.5, 0.7])
     plt.xlabel("Epochs [Log Scale]")
@@ -140,6 +140,7 @@ def main():
     regularizer_histories = {}
     regularizer_histories['Tiny'] = size_histories['Tiny']
 
+    print("l2_model")
     l2_model = tf.keras.Sequential([
         tf.keras.layers.Dense(512, activation='elu',
                               kernel_regularizer=tf.keras.regularizers.l2(0.001),
@@ -152,15 +153,16 @@ def main():
                               kernel_regularizer=tf.keras.regularizers.l2(0.001)),
         tf.keras.layers.Dense(1)
     ])
-
     regularizer_histories['l2'] = compile_and_fit(l2_model, "regularizers/l2")
-
     plotter.plot(regularizer_histories)
     plt.ylim([0.5, 0.7])
 
     result = l2_model(features)
     regularization_loss = tf.add_n(l2_model.losses)
+    print("result: {}", result)
+    print("regularization_loss: {}", regularization_loss)
 
+    print("dropout_model")
     dropout_model = tf.keras.Sequential([
         tf.keras.layers.Dense(512, activation='elu', input_shape=(FEATURES,)),
         tf.keras.layers.Dropout(0.5),
@@ -172,12 +174,11 @@ def main():
         tf.keras.layers.Dropout(0.5),
         tf.keras.layers.Dense(1)
     ])
-
     regularizer_histories['dropout'] = compile_and_fit(dropout_model, "regularizers/dropout")
-
     plotter.plot(regularizer_histories)
     plt.ylim([0.5, 0.7])
 
+    print("combined_model")
     combined_model = tf.keras.Sequential([
         tf.keras.layers.Dense(512, kernel_regularizer=tf.keras.regularizers.l2(0.0001),
                               activation='elu', input_shape=(FEATURES,)),
@@ -193,9 +194,7 @@ def main():
         tf.keras.layers.Dropout(0.5),
         tf.keras.layers.Dense(1)
     ])
-
     regularizer_histories['combined'] = compile_and_fit(combined_model, "regularizers/combined")
-
     plotter.plot(regularizer_histories)
     plt.ylim([0.5, 0.7])
 
