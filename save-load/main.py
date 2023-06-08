@@ -30,7 +30,7 @@ def main():
 
     checkpoint_path = "training_1/cp.ckpt"
     checkpoint_dir = os.path.dirname(checkpoint_path)
-
+    # Checkpoint
     cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path, save_weights_only=True, verbose=1)
 
     model.fit(train_images,
@@ -78,6 +78,7 @@ def main():
     loss, acc = model.evaluate(test_images, test_labels, verbose=2)
     print("Restored model, accuracy: {:5.2f}%".format(100 * acc))
 
+    # Save
     model = create_model()
     model.fit(train_images, train_labels, epochs=5)
     model.save('saved_model/my_model')
