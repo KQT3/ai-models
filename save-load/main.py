@@ -8,11 +8,11 @@ print(tf.version.VERSION)
 
 def create_model():
     model = tf.keras.Sequential([
-        keras.layers.Dense(512, activation='relu', input_shape=(784,)),
+        keras.layers.Dense(512, activation="relu", input_shape=(784,)),
         keras.layers.Dropout(0.2),
         keras.layers.Dense(10)
     ])
-    model.compile(optimizer='adam',
+    model.compile(optimizer=tf.keras.optimizers.Adam(),
                   loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
                   metrics=[tf.keras.metrics.SparseCategoricalAccuracy()])
     return model
@@ -20,7 +20,6 @@ def create_model():
 
 def main():
     (train_images, train_labels), (test_images, test_labels) = tf.keras.datasets.mnist.load_data()
-
     train_labels = train_labels[:1000]
     test_labels = test_labels[:1000]
     train_images = train_images[:1000].reshape(-1, 28 * 28) / 255.0
@@ -32,9 +31,7 @@ def main():
     checkpoint_path = "training_1/cp.ckpt"
     checkpoint_dir = os.path.dirname(checkpoint_path)
 
-    cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
-                                                     save_weights_only=True,
-                                                     verbose=1)
+    cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path, save_weights_only=True, verbose=1)
 
     model.fit(train_images,
               train_labels,
