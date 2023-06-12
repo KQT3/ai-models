@@ -29,6 +29,7 @@ def build_and_compile_model(norm):
 
 
 def main():
+    tf.keras.activations.exponential
     np.set_printoptions(precision=3, suppress=True)
 
     url = 'http://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data'
