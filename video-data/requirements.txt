@@ -1,1 +1,6 @@
 tensorflow
+remotezip
+tqdm
+opencv-python
+imageio
+IPython
