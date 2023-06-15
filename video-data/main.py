@@ -128,6 +128,12 @@ def frames_from_video_file(video_path, n_frames, output_size=(224, 224), frame_s
     return result
 
 
+def to_gif(images):
+    converted_images = np.clip(images * 255, 0, 255).astype(np.uint8)
+    imageio.mimsave('./animation.gif', converted_images, duration=10)
+    return embed.embed_file('./animation.gif')
+
+
 class FrameGenerator:
     def __init__(self, path, n_frames, training=False):
         self.path = path
@@ -189,13 +195,7 @@ def main():
     sample_video = frames_from_video_file(video_path, n_frames=10)
     print(sample_video.shape)
 
-    def to_gif(images):
-        converted_images = np.clip(images * 255, 0, 255).astype(np.uint8)
-        imageio.mimsave('./animation.gif', converted_images, duration=10)
-        return embed.embed_file('./animation.gif')
-
     to_gif(sample_video)
-
     ucf_sample_video = frames_from_video_file(next(subset_paths['train'].glob('*/*.avi')), 50)
     to_gif(ucf_sample_video)
 
