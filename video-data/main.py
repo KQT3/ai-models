@@ -249,9 +249,9 @@ def main():
         tf.keras.layers.GlobalAveragePooling3D()
     ])
 
-    model.compile(optimizer='adam',
+    model.compile(optimizer=tf.keras.optimizers.Adam(),
                   loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-                  metrics=['accuracy'])
+                  metrics=["accuracy"])
 
     model.fit(train_ds,
               epochs=10,
