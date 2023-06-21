@@ -1,3 +1,4 @@
 images.tfrecords
 test.tfrecord
 .idea
+venv
