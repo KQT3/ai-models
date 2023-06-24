@@ -11,3 +11,8 @@ https://www.tensorflow.org/datasets
 https://knowyourdata-tfds.withgoogle.com/
 
 https://tfhub.dev/
+
+- Text (BERT)
+- Vision - CNN (Images/Video)
+- Audio (Generate)
+- Generative
