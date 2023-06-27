@@ -1,3 +1,5 @@
 tensorflow
-tensorflow_datasets
-tensorflow_text
+tensorflow-text
+
+pycocotools
+tf-models-official
