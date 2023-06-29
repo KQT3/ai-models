@@ -148,6 +148,7 @@ map_model_to_preprocess = {
         'https://tfhub.dev/tensorflow/bert_en_uncased_preprocess/3',
 }
 
+
 def main():
     url = 'https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz'
     dataset = tf.keras.utils.get_file('aclImdb_v1.tar.gz', url,
@@ -332,7 +333,7 @@ def main():
     serving_results = tf.sigmoid(serving_results['classifier'])
 
     print_my_examples(examples, serving_results)
-    
+
 
 if __name__ == '__main__':
     main()
