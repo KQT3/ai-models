@@ -2,6 +2,10 @@ pip install -r requirements.txt
 
 https://www.tensorflow.org/text/tutorials/classify_text_with_bert
 
+depends on graphviz
+
+``sudo apt install graphviz```
+
 ```
 keras                         2.12.0
 numpy                         1.23.5
@@ -23,4 +27,7 @@ text-unidecode                1.3
 texttable                     1.6.4
 tf-models-official            2.12.0
 tf-slim                       1.1.0
+
+pydot                         1.4.2
+graphviz                      0.20.1
 ```
